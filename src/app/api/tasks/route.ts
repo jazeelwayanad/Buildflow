@@ -1,6 +1,21 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
-import { tasks } from "@/lib/demo-data";
-const input=z.object({projectId:z.string().min(1),sectionId:z.string().optional(),title:z.string().trim().min(3).max(160),priority:z.enum(["LOW","MEDIUM","HIGH","URGENT"]).default("MEDIUM")});
-export async function GET(request:Request){const status=new URL(request.url).searchParams.get("status");return NextResponse.json({data:status?tasks.filter(t=>t.status.toLowerCase().replace(" ","_")===status.toLowerCase()):tasks});}
-export async function POST(request:Request){const parsed=input.safeParse(await request.json());if(!parsed.success)return NextResponse.json({error:"Invalid task",details:parsed.error.flatten()},{status:400});return NextResponse.json({data:{id:crypto.randomUUID(),...parsed.data,status:"BACKLOG"}},{status:201});}
+import { api } from "@/lib/api";
+import { ApiError, requireProject, requireUser } from "@/lib/auth";
+import { db } from "@/lib/db";
+export const GET = api(async request => {
+  const user = await requireUser();
+  const projectId = new URL(request.url).searchParams.get("projectId") ?? undefined;
+  return Response.json({ data: await db.task.findMany({ where: { projectId, project: { members: { some: { userId: user.id } } } } }) });
+});
+export const POST = api(async request => {
+  const input = z.object({ projectId: z.string().min(1), sectionId: z.string().optional(), title: z.string().trim().min(3).max(160), priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM") }).parse(await request.json());
+  const { user } = await requireProject(input.projectId, true);
+  const section = input.sectionId ? await db.section.findFirst({ where: { id: input.sectionId, page: { module: { projectId: input.projectId } } } }) : null;
+  if (input.sectionId && !section) throw new ApiError(404, "Section not found");
+  const task = await db.$transaction(async tx => {
+    const result = await tx.task.create({ data: { ...input, status: section?.specStatus === "APPROVED" ? "READY" : "BACKLOG" } });
+    await tx.activityLog.create({ data: { projectId: input.projectId, actorId: user.id, action: `Created task: ${input.title}`, entityType: "task", entityId: result.id } });
+    return result;
+  });
+  return Response.json({ data: task }, { status: 201 });
+});

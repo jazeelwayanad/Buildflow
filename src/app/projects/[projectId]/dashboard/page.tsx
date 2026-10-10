@@ -1,13 +1,2 @@
-import Link from "next/link";
-import { activity, modules, tasks } from "@/lib/demo-data";
-import { PageHeader, StatCard, StatusPill } from "@/components/ui";
-import { AlertTriangle, CircleCheck, Clock3, GitPullRequest, Plus } from "@/components/icons";
-
-export default function Dashboard() {
- return <div className="content"><PageHeader eyebrow="Project workspace" title="Good morning, Maya" description="Here’s what’s moving across BuildFlow today." actions={<><button className="button">View activity</button><Link className="button primary" href="/projects/buildflow/tasks"><Plus size={15}/>New task</Link></>}/>
-  <section className="stats-grid"><StatCard label="Overall progress" value="68%" note="↑ 8% in the last 30 days" icon={<CircleCheck size={20}/>}/><StatCard label="Active tasks" value="12" note="4 assigned to you" tone="blue" icon={<Clock3 size={20}/>}/><StatCard label="In review" value="5" note="2 waiting over 24 hours" tone="orange" icon={<GitPullRequest size={20}/>}/><StatCard label="Open blockers" value="3" note="1 marked urgent" tone="green" icon={<AlertTriangle size={20}/>}/></section>
-  <section className="dashboard-grid"><article className="panel"><div className="panel-head"><div><h2>Project progress</h2><p>Completion by product module</p></div><Link href="/projects/buildflow/script">View script →</Link></div><div className="progress-overview"><div className="overall"><div className="donut"><span>68%</span></div><div className="overall-copy"><h3>34 of 50 tasks complete</h3><p>The foundation is stable. Script and task workflows are the current focus.</p><div className="legend"><span><i style={{background:"#6c45e7"}}/>Complete</span><span><i style={{background:"#eeeaf5"}}/>Remaining</span></div></div></div><div className="module-progress">{modules.slice(0,5).map(m=><div className="module-row" key={m.name}><b>{m.name}</b><div className="bar"><i style={{width:`${m.progress}%`}}/></div><span>{m.progress}%</span></div>)}</div></div></article>
-  <article className="panel"><div className="panel-head"><div><h2>Recent activity</h2><p>Latest project updates</p></div><button>View all</button></div><div className="activity-list">{activity.map(a=><div className="activity-item" key={a.action}><span className="avatar" style={{background:a.color}}>{a.who.split(" ").map(x=>x[0]).join("")}</span><p><b>{a.who}</b> {a.action}<small>{a.time}</small></p></div>)}</div></article>
-  <article className="panel" style={{gridColumn:"1/-1"}}><div className="panel-head"><div><h2>Priority tasks</h2><p>Work needing attention this week</p></div><Link href="/projects/buildflow/tasks">Open task board →</Link></div><table className="task-table"><thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Owner</th></tr></thead><tbody>{tasks.slice(0,5).map(t=><tr key={t.id}><td><div className="task-title"><b>{t.title}</b><small>{t.id} · {t.module}</small></div></td><td><StatusPill>{t.status}</StatusPill></td><td>{t.priority}</td><td>{t.owner}</td></tr>)}</tbody></table></article></section>
- </div>
-}
+import { WorkspaceView } from "@/components/workspace-view";
+export default function Page() { return <WorkspaceView view="dashboard"/>; }

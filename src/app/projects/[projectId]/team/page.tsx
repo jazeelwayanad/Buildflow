@@ -1,2 +1,2 @@
-import { PageHeader } from "@/components/ui";import { Plus } from "@/components/icons";import { team } from "@/lib/demo-data";
-export default function Team(){return <div className="content"><PageHeader eyebrow="Workspace access" title="Team" description="Manage roles, invitations, and the work assigned across BuildFlow." actions={<button className="button primary"><Plus size={14}/>Invite member</button>}/><div className="team-grid">{team.map(m=><article className="member-card" key={m.email}><span className="avatar">{m.initials}</span><div><b>{m.name}</b><small>{m.email}</small></div><div className="member-meta"><span>{m.role}</span><small>{m.workload} active tasks</small></div></article>)}</div></div>}
+import { WorkspaceView } from "@/components/workspace-view";
+export default function Page() { return <WorkspaceView view="team"/>; }

@@ -7,19 +7,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role { OWNER DEVELOPER DESIGNER FINANCE QA }
-enum ProjectStatus { ACTIVE ARCHIVED }
-enum SpecStatus { DRAFT IN_REVIEW APPROVED SUPERSEDED }
-enum TaskStatus { BACKLOG READY IN_PROGRESS CODE_REVIEW QA DONE }
-enum Priority { LOW MEDIUM HIGH URGENT }
-enum BugSeverity { LOW MEDIUM HIGH CRITICAL }
-enum BugStatus { OPEN IN_PROGRESS RESOLVED VERIFIED }
-enum TestStatus { PENDING PASSED FAILED }
+enum Role {
+ OWNER
+ DEVELOPER
+ DESIGNER
+ FINANCE
+ QA
+}
+enum ProjectStatus {
+ ACTIVE
+ ARCHIVED
+}
+enum SpecStatus {
+ DRAFT
+ IN_REVIEW
+ APPROVED
+ SUPERSEDED
+}
+enum TaskStatus {
+ BACKLOG
+ READY
+ IN_PROGRESS
+ CODE_REVIEW
+ QA
+ DONE
+}
+enum Priority {
+ LOW
+ MEDIUM
+ HIGH
+ URGENT
+}
+enum BugSeverity {
+ LOW
+ MEDIUM
+ HIGH
+ CRITICAL
+}
+enum BugStatus {
+ OPEN
+ IN_PROGRESS
+ RESOLVED
+ VERIFIED
+}
+enum TestStatus {
+ PENDING
+ PASSED
+ FAILED
+}
 
 model User {
   id String @id @default(cuid())
   name String
   email String @unique
+  passwordHash String?
+  sessions Session[]
   createdAt DateTime @default(now())
   organizationMemberships OrganizationMember[]
   projectMemberships ProjectMember[]
@@ -54,6 +96,7 @@ model Project {
   status ProjectStatus @default(ACTIVE)
   stack String @default("Next.js · PostgreSQL · Tailwind")
   repositoryUrl String?
+  developmentRules String @default("")
   createdAt DateTime @default(now())
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   members ProjectMember[]
@@ -108,6 +151,7 @@ model Section {
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
   features Feature[]
   tasks Task[]
+  revisions SectionRevision[]
   @@unique([pageId, position])
 }
 
@@ -117,6 +161,24 @@ model Feature {
   title String
   description String
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model SectionRevision {
+ id String @id @default(cuid())
+ sectionId String
+ version Int
+ specification Json
+ specStatus SpecStatus
+ createdAt DateTime @default(now())
+ section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+ @@unique([sectionId, version])
+}
+
+model AuthAttempt {
+ id String @id @default(cuid())
+ key String
+ createdAt DateTime @default(now())
+ @@index([key, createdAt])
 }
 
 model Task {
@@ -129,6 +191,7 @@ model Task {
   assigneeId String?
   priority Priority @default(MEDIUM)
   description String @default("")
+  qaAccepted Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -139,6 +202,14 @@ model Task {
   testCases TestCase[]
   bugs Bug[]
   githubLink GithubLink?
+}
+
+model Session {
+ id String @id
+ userId String
+ expiresAt DateTime
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ @@index([userId])
 }
 
 model TaskDependency {
