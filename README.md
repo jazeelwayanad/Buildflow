@@ -20,3 +20,14 @@ Each section is a complete specification, not just a task title. Developers can 
 Foundation → Authentication → Projects → Script Editor → Task Board → QA → Dashboard → Settings.
 
 Every task requires an approved specification, an owner, tests, review, and a documented handoff.
+
+## Run the application
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`. The included demo workspace exercises the full interface without external services. For database-backed development, copy `.env.example` to `.env.local`, configure PostgreSQL, then run `npm run db:generate` and `npm run db:push`.
+
+Quality checks: `npm test`, `npm run typecheck`, `npm run lint`, and `npm run build`.
