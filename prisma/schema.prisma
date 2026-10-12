@@ -66,6 +66,7 @@ model User {
   organizationMemberships OrganizationMember[]
   projectMemberships ProjectMember[]
   assignedTasks Task[]
+  assignedBugs Bug[]
   activity ActivityLog[]
 }
 
@@ -104,6 +105,7 @@ model Project {
   tasks Task[]
   bugs Bug[]
   decisions Decision[]
+  invitations ProjectInvitation[]
   activity ActivityLog[]
 }
 
@@ -151,6 +153,7 @@ model Section {
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
   features Feature[]
   tasks Task[]
+  bugs Bug[]
   revisions SectionRevision[]
   @@unique([pageId, position])
 }
@@ -244,6 +247,8 @@ model Bug {
   id String @id @default(cuid())
   projectId String
   taskId String?
+  sectionId String?
+  assigneeId String?
   title String
   severity BugSeverity
   status BugStatus @default(OPEN)
@@ -253,6 +258,20 @@ model Bug {
   createdAt DateTime @default(now())
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   task Task? @relation(fields: [taskId], references: [id])
+  section Section? @relation(fields: [sectionId], references: [id])
+  assignee User? @relation(fields: [assigneeId], references: [id])
+}
+
+model ProjectInvitation {
+  id String @id @default(cuid())
+  projectId String
+  email String
+  role Role @default(DEVELOPER)
+  token String @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@index([projectId, email])
 }
 
 model Decision {
