@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Mahall Forms — Single Page Preview</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Arial, sans-serif;
+            color: #172238;
+            background: #f6f8f8
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e5e9e9;
+            padding: 19px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 21px;
+            color: #075d47
+        }
+
+        .tag {
+            font-size: 12px;
+            color: #64748b
+        }
+
+        main {
+            max-width: 1230px;
+            margin: 28px auto;
+            padding: 0 22px
+        }
+
+        .intro {
+            margin-bottom: 20px
+        }
+
+        .intro h1 {
+            font-size: 27px;
+            margin: 0 0 7px
+        }
+
+        .intro p {
+            color: #64748b;
+            margin: 0
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 20px 0
+        }
+
+        .tab {
+            border: 1px solid #dfe5e5;
+            border-radius: 9px;
+            padding: 12px 18px;
+            background: #fff;
+            font-weight: 650;
+            color: #334155;
+            cursor: pointer
+        }
+
+        .tab.active {
+            background: #066a50;
+            color: white;
+            border-color: #066a50
+        }
+
+        .form-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 25px 0
+        }
+
+        .form-head h2 {
+            font-size: 24px;
+            margin: 0 0 6px
+        }
+
+        .form-head p {
+            color: #64748b;
+            margin: 0
+        }
+
+        .chip {
+            background: #e4f3ed;
+            color: #086448;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .section {
+            background: #fff;
+            border: 1px solid #e8eeee;
+            border-radius: 14px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 2px 7px #112c2206
+        }
+
+        .section h3 {
+            font-size: 17px;
+            margin: 0 0 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #edf0f1
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #273246
+        }
+
+        input,
+        select,
+        textarea {
+            font: inherit;
+            font-size: 14px;
+            color: #263342;
+            background: #f8f9fa;
+            border: 1px solid #e7ebed;
+            border-radius: 9px;
+            min-height: 43px;
+            padding: 10px 12px;
+            width: 100%;
+            outline-color: #0b8867
+        }
+
+        textarea {
+            min-height: 78px;
+            resize: vertical
+        }
+
+        input[type=checkbox] {
+            width: 18px;
+            min-height: 18px;
+            accent-color: #078563
+        }
+
+        label.check {
+            flex-direction: row;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 9px;
+            padding: 11px 13px;
+            gap: 11px
+        }
+
+        .notice {
+            background: #fff9e9;
+            border: 1px solid #f2e5b5;
+            border-radius: 10px;
+            padding: 13px 17px;
+            color: #745a18;
+            font-size: 13px;
+            margin: 18px 0
+        }
+
+        .foot {
+            padding: 20px 0 35px;
+            color: #64748b;
+            font-size: 13px
+        }
+
+        .hide {
+            display: none !important
+        }
+
+        @media(max-width:650px) {
+            header {
+                padding: 16px
+            }
+
+            .tag {
+                display: none
+            }
+
+            main {
+                padding: 0 13px;
+                margin: 20px auto
+            }
+
+            .fields {
+                grid-template-columns: 1fr
+            }
+
+            .section {
+                padding: 17px
+            }
+
+            .tab {
+                flex: 1 1 45%;
+                padding: 11px 8px;
+                font-size: 12px
+            }
+
+            .form-head {
+                align-items: flex-start
+            }
+
+            .chip {
+                white-space: nowrap
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="brand">◈ Mahall <span style="font-weight:400;color:#718096">/ Form Preview</span></div><span
+            class="tag">Eucode Solutions LLP · UI demonstration</span>
+    </header>
+    <main>
+        <div class="intro">
+            <h1>Registration & Survey Forms</h1>
+            <p>Select a form to view every field together on one scrollable page. No steps, accordions or saving
+                required.</p>
+        </div>
+        <nav class="tabs"><button class="tab active" data-id="family_registration"
+                onclick="showForm('family_registration')">Family Registration</button><button class="tab "
+                data-id="member_registration" onclick="showForm('member_registration')">Member
+                Registration</button><button class="tab " data-id="family_survey"
+                onclick="showForm('family_survey')">Family Survey</button><button class="tab " data-id="member_survey"
+                onclick="showForm('member_survey')">Member Survey</button></nav>
+        <div class="notice">Preview only — fields are displayed for design review. No data is submitted or stored. Use
+            fictional values when testing.</div>
+        <div class="page " id="family_registration">
+            <div class="form-head">
+                <div>
+                    <h2>Family Registration</h2>
+                    <p>Primary form · Quick registration</p>
+                </div><span class="chip">14 fields · 3 sections</span>
+            </div>
+            <section class="section">
+                <h3>Family identity</h3>
+                <div class="fields"><label>Family Name *<input type="text"
+                            placeholder="Family Name"></label><label>Mahall / Zone / Block *<select>
+                            <option>Choose zone</option>
+                            <option>Zone A</option>
+                            <option>Zone B</option>
+                            <option>Zone C</option>
+                        </select></label><label>Registration Date<input type="date" placeholder=""></label><label>Family
+                        Status<select>
+                            <option>Active</option>
+                            <option>Inactive</option>
+                        </select></label></div>
+            </section>
+            <section class="section">
+                <h3>Family head &amp; contact</h3>
+                <div class="fields"><label>Family Head Full Name *<input type="text"
+                            placeholder="Family Head Full Name"></label><label>Primary Contact Number<input type="tel"
+                            placeholder="Primary Contact Number"></label><label>Family Contact Person<input type="text"
+                            placeholder="Family Contact Person"></label><label>Alternative Phone<input type="tel"
+                            placeholder="Alternative Phone"></label></div>
+            </section>
+            <section class="section">
+                <h3>Household association</h3>
+                <div class="fields"><label>House Selection *<select>
+                            <option>Select existing house</option>
+                            <option>Create new house</option>
+                        </select></label><label>Mahall House Number<input type="text"
+                            placeholder="Mahall House Number"></label><label>House Name<input type="text"
+                            placeholder="House Name"></label><label>Place / Locality<input type="text"
+                            placeholder="Place / Locality"></label><label>Ward Number<input type="text"
+                            placeholder="Ward Number"></label><label>PIN Code<input type="text"
+                            placeholder="PIN Code"></label></div>
+            </section>
+        </div>
+        <div class="page hide" id="member_registration">
+            <div class="form-head">
+                <div>
+                    <h2>Member Registration</h2>
+                    <p>Primary form · Quick registration</p>
+                </div><span class="chip">12 fields · 3 sections</span>
+            </div>
+            <section class="section">
+                <h3>Personal details</h3>
+                <div class="fields"><label>Full Legal Name *<input type="text"
+                            placeholder="Full Legal Name"></label><label>Gender<select>
+                            <option>Select gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                            <option>Prefer not to say</option>
+                        </select></label><label>Date of Birth<input type="date" placeholder=""></label><label>Estimated
+                        Age (if DOB unknown)<input type="number" placeholder=""></label><label>Father&#x27;s Name<input
+                            type="text" placeholder="Father&#x27;s Name"></label><label>Primary Mobile Number<input
+                            type="tel" placeholder="Primary Mobile Number"></label></div>
+            </section>
+            <section class="section">
+                <h3>Family association</h3>
+                <div class="fields"><label>Linked Family *<select>
+                            <option>Select family</option>
+                            <option>Sample Family A</option>
+                            <option>Sample Family B</option>
+                        </select></label><label>Relationship to Head *<select>
+                            <option>Select relation</option>
+                            <option>Head</option>
+                            <option>Spouse</option>
+                            <option>Son</option>
+                            <option>Daughter</option>
+                            <option>Father</option>
+                            <option>Mother</option>
+                            <option>Sibling</option>
+                            <option>Other</option>
+                        </select></label><label>Membership Status<select>
+                            <option>Active</option>
+                            <option>Inactive</option>
+                        </select></label></div>
+            </section>
+            <section class="section">
+                <h3>Optional quick details</h3>
+                <div class="fields"><label>Marital Status<select>
+                            <option>Select</option>
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Widowed</option>
+                            <option>Divorced</option>
+                        </select></label><label>WhatsApp Number<input type="tel"
+                            placeholder="WhatsApp Number"></label><label>Email Address<input type="email"
+                            placeholder="Email Address"></label></div>
+            </section>
+        </div>
+        <div class="page hide" id="family_survey">
+            <div class="form-head">
+                <div>
+                    <h2>Family Survey</h2>
+                    <p>Secondary form · All sections on one page</p>
+                </div><span class="chip">125 fields · 12 sections</span>
+            </div>
+            <section class="section">
+                <h3>01 · Family composition</h3>
+                <div class="fields"><label>Family Structure<select>
+                            <option>Select</option>
+                            <option>Nuclear</option>
+                            <option>Joint</option>
+                            <option>Extended</option>
+                            <option>Other</option>
+                        </select></label><label>Parent / Joint Family<input type="text"
+                            placeholder="Parent / Joint Family"></label><label>Tharavad Name<input type="text"
+                            placeholder="Tharavad Name"></label><label>Previous Mahall<input type="text"
+                            placeholder="Previous Mahall"></label><label>Year Joined Mahall<input type="number"
+                            placeholder=""></label><label>Family Category / Grade<input type="text"
+                            placeholder="Family Category / Grade"></label><label>Family Record Number<input type="text"
+                            placeholder="Family Record Number"></label><label>Family Exclusion Reason<input type="text"
+                            placeholder="Family Exclusion Reason"></label></div>
+            </section>
+            <section class="section">
+                <h3>02 · Housing and occupancy</h3>
+                <div class="fields"><label>Housing Tenure<select>
+                            <option>Select</option>
+                            <option>Owned</option>
+                            <option>Rented</option>
+                            <option>Provided</option>
+                            <option>Other</option>
+                        </select></label><label>Building Type<select>
+                            <option>Select</option>
+                            <option>Concrete</option>
+                            <option>Tiled</option>
+                            <option>Temporary</option>
+                            <option>Other</option>
+                        </select></label><label>Number of Rooms<input type="number"
+                            placeholder=""></label><label>Landmark<input type="text"
+                            placeholder="Landmark"></label><label>Village<input type="text"
+                            placeholder="Village"></label><label>Panchayat / Municipality<input type="text"
+                            placeholder="Panchayat / Municipality"></label><label>House Condition<select>
+                            <option>Select</option>
+                            <option>Good</option>
+                            <option>Needs Repair</option>
+                            <option>Unsafe</option>
+                        </select></label><label>Toilet / Latrine Facility<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Kitchen Garden Available<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Kitchen Garden Crops<input type="text"
+                            placeholder="Kitchen Garden Crops"></label></div>
+            </section>
+            <section class="section">
+                <h3>03 · Utilities and appliances</h3>
+                <div class="fields"><label class="check"><input type="checkbox">Electricity</label><label
+                        class="check"><input type="checkbox">Cooking Gas</label><label class="check"><input
+                            type="checkbox">Well</label><label class="check"><input type="checkbox">Common Well
+                        Access</label><label class="check"><input type="checkbox">Tap Water</label><label>Water
+                        Ownership<select>
+                            <option>Select</option>
+                            <option>Own</option>
+                            <option>Shared</option>
+                            <option>Public</option>
+                        </select></label><label>Water Availability<select>
+                            <option>Select</option>
+                            <option>Regular</option>
+                            <option>Seasonal</option>
+                            <option>Limited</option>
+                        </select></label><label class="check"><input type="checkbox">Landline Telephone</label><label
+                        class="check"><input type="checkbox">Computer / Laptop</label><label class="check"><input
+                            type="checkbox">Television</label><label class="check"><input
+                            type="checkbox">Internet</label><label class="check"><input type="checkbox">Cable
+                        TV</label><label class="check"><input type="checkbox">Refrigerator</label><label
+                        class="check"><input type="checkbox">Washing Machine</label><label class="check"><input
+                            type="checkbox">Air Conditioner</label><label class="check"><input type="checkbox">Sewing
+                        Machine</label></div>
+            </section>
+            <section class="section">
+                <h3>04 · Vehicles, land and assets</h3>
+                <div class="fields"><label>Bicycles<input type="number" placeholder=""></label><label>Two-Wheelers<input
+                            type="number" placeholder=""></label><label>Three-Wheelers<input type="number"
+                            placeholder=""></label><label>Four-Wheelers<input type="number"
+                            placeholder=""></label><label>Goods Vehicles<input type="number"
+                            placeholder=""></label><label>Heavy Vehicles<input type="number"
+                            placeholder=""></label><label>Land Ownership<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Land Area<input type="number" placeholder=""></label><label>Agricultural
+                        Land Area<input type="number" placeholder=""></label><label>Rental Buildings<input type="number"
+                            placeholder=""></label><label>Business Assets Value<input type="number"
+                            placeholder=""></label><label>Rental Property Value<input type="number"
+                            placeholder=""></label><label>Farm Assets Value<input type="number"
+                            placeholder=""></label><label>Other Assets Value<input type="number" placeholder=""></label>
+                </div>
+            </section>
+            <section class="section">
+                <h3>05 · Agriculture and livestock</h3>
+                <div class="fields"><label>Coconut Trees<input type="number" placeholder=""></label><label>Arecanut
+                        Trees<input type="number" placeholder=""></label><label>Rubber Trees<input type="number"
+                            placeholder=""></label><label>Paddy Cultivation<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Vegetable Cultivation<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Poultry / Hatchery Quantity<input type="number"
+                            placeholder=""></label><label>Goats<input type="number"
+                            placeholder=""></label><label>Cattle<input type="number" placeholder=""></label><label>Other
+                        Agricultural Activities<input type="text" placeholder="Other Agricultural Activities"></label>
+                </div>
+            </section>
+            <section class="section">
+                <h3>06 · Income and economic status</h3>
+                <div class="fields"><label>Income Sources<textarea
+                            placeholder="Enter details..."></textarea></label><label>Income Source Description<input
+                            type="text" placeholder="Income Source Description"></label><label>Income Amount<input
+                            type="number" placeholder=""></label><label>Income Frequency<select>
+                            <option>Monthly</option>
+                            <option>Annual</option>
+                            <option>Weekly</option>
+                            <option>Other</option>
+                        </select></label><label>Annual Household Income<input type="number"
+                            placeholder=""></label><label>Employment / Economic Notes<textarea
+                            placeholder="Enter details..."></textarea></label><label>Income Assessment Date<input
+                            type="date" placeholder=""></label><label>Income Verification Status<select>
+                            <option>Pending</option>
+                            <option>Verified</option>
+                            <option>Unverified</option>
+                        </select></label></div>
+            </section>
+            <section class="section">
+                <h3>07 · Loans and liabilities</h3>
+                <div class="fields"><label>Total Outstanding Liability<input type="number"
+                            placeholder=""></label><label>Business Liability<input type="number"
+                            placeholder=""></label><label>Family Liability Categories<textarea
+                            placeholder="Enter details..."></textarea></label><label>Gold Mortgaged<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Land Mortgaged<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Other Collateral<input type="text"
+                            placeholder="Other Collateral"></label><label>Loan Repayment Method<input type="text"
+                            placeholder="Loan Repayment Method"></label><label>Has Outstanding Loans<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Loan Purpose<select>
+                            <option>Select</option>
+                            <option>Education</option>
+                            <option>Housing</option>
+                            <option>Vehicle</option>
+                            <option>Employment</option>
+                            <option>Business</option>
+                            <option>Treatment</option>
+                            <option>Marriage</option>
+                            <option>Other</option>
+                        </select></label><label>Loan Source / KSFE<input type="text"
+                            placeholder="Loan Source / KSFE"></label><label>Loan Amount<input type="number"
+                            placeholder=""></label><label>Bank Loan Support<input type="number"
+                            placeholder=""></label><label>Government Financial Support<input type="number"
+                            placeholder=""></label><label>Zakat Financial Support<input type="number"
+                            placeholder=""></label><label>Loan Repayment Status<select>
+                            <option>Select</option>
+                            <option>Current</option>
+                            <option>Overdue</option>
+                            <option>Closed</option>
+                        </select></label></div>
+            </section>
+            <section class="section">
+                <h3>08 · Welfare and basic needs</h3>
+                <div class="fields"><label>Requires Assistance<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                            <option>Undisclosed</option>
+                        </select></label><label>Assistance Category<input type="text"
+                            placeholder="Assistance Category"></label><label>Assistance from Mahall<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Support Required<textarea
+                            placeholder="Enter details..."></textarea></label><label>Immediate Assistance Needed<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Social Attention Required<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Welfare Priority<select>
+                            <option>Select</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                            <option>Urgent</option>
+                        </select></label><label>Coconut Assistance<input type="text"
+                            placeholder="Coconut Assistance"></label><label>Subsidy Assistance<input type="text"
+                            placeholder="Subsidy Assistance"></label><label>Rice Distribution<input type="text"
+                            placeholder="Rice Distribution"></label><label>Food Assistance<input type="text"
+                            placeholder="Food Assistance"></label><label>Special Circumstances<textarea
+                            placeholder="Enter details..."></textarea></label><label>Welfare Remarks<textarea
+                            placeholder="Enter details..."></textarea></label></div>
+            </section>
+            <section class="section">
+                <h3>09 · Ration card and insurance</h3>
+                <div class="fields"><label>Ration Card Category<select>
+                            <option>Select</option>
+                            <option>AAY</option>
+                            <option>PHH</option>
+                            <option>NPHH</option>
+                            <option>Other</option>
+                        </select></label><label>Ration Card Number<input type="text"
+                            placeholder="Ration Card Number"></label><label>Food Assistance Eligibility<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                            <option>Pending</option>
+                        </select></label><label>Family Insurance Available<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Insurance Policy Reference<input type="text"
+                            placeholder="Insurance Policy Reference"></label><label>Food Security Concerns<textarea
+                            placeholder="Enter details..."></textarea></label></div>
+            </section>
+            <section class="section">
+                <h3>10 · Religious education and practices (optional)</h3>
+                <div class="fields"><label>Family Religious Education Needs<textarea
+                            placeholder="Enter details..."></textarea></label><label>Religious Education Support
+                        Needed<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Prayer Survey Response<input type="text"
+                            placeholder="Prayer Survey Response"></label><label>Fasting Survey Response<input
+                            type="text" placeholder="Fasting Survey Response"></label><label>Zakat Survey Response<input
+                            type="text" placeholder="Zakat Survey Response"></label><label>Hajj Survey Response<input
+                            type="text" placeholder="Hajj Survey Response"></label><label>Original Questionnaire Answers
+                        (three_1–three_9 etc.)<textarea placeholder="Enter details..."></textarea></label></div>
+            </section>
+            <section class="section">
+                <h3>11 · Community and publications</h3>
+                <div class="fields"><label>Newspaper Subscription<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Magazine Subscription<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Weekly Publication<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Collection Box Number<input type="text"
+                            placeholder="Collection Box Number"></label><label>Community Participation
+                        Preferences<textarea placeholder="Enter details..."></textarea></label><label>Family
+                        Remarks<textarea placeholder="Enter details..."></textarea></label><label>Survey Collector<input
+                            type="text" placeholder="Survey Collector"></label><label>Information Provided By<input
+                            type="text" placeholder="Information Provided By"></label><label>Survey Date<input
+                            type="date" placeholder=""></label></div>
+            </section>
+            <section class="section">
+                <h3>12 · Finance and subscription (operational)</h3>
+                <div class="fields"><label>Subscription Plan<input type="text"
+                            placeholder="Subscription Plan"></label><label>Subscription Amount<input type="number"
+                            placeholder=""></label><label>Subscription Paid<input type="number"
+                            placeholder=""></label><label>Subscription Balance<input type="number"
+                            placeholder=""></label><label>Subscription Advance<input type="number"
+                            placeholder=""></label><label>Mess Contribution<input type="number"
+                            placeholder=""></label><label>Annual Contribution<input type="number"
+                            placeholder=""></label><label>Ramadan Contribution<input type="number"
+                            placeholder=""></label><label>General Donation<input type="number"
+                            placeholder=""></label><label>Sampalappiriv Collection<input type="number"
+                            placeholder=""></label></div>
+            </section>
+        </div>
+        <div class="page hide" id="member_survey">
+            <div class="form-head">
+                <div>
+                    <h2>Member Survey</h2>
+                    <p>Secondary form · All sections on one page</p>
+                </div><span class="chip">109 fields · 12 sections</span>
+            </div>
+            <section class="section">
+                <h3>01 · Personal profile</h3>
+                <div class="fields"><label>Profile Photograph<input type="file" placeholder=""></label><label>Blood
+                        Group<select>
+                            <option>Select</option>
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                            <option>O+</option>
+                            <option>O-</option>
+                        </select></label><label>Mother&#x27;s Name<input type="text"
+                            placeholder="Mother&#x27;s Name"></label><label>Grandfather&#x27;s Name<input type="text"
+                            placeholder="Grandfather&#x27;s Name"></label><label>Marital Status<select>
+                            <option>Select</option>
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Widowed</option>
+                            <option>Divorced</option>
+                        </select></label><label>Marriage / Family Details<input type="text"
+                            placeholder="Marriage / Family Details"></label><label>Number of Sons<input type="number"
+                            placeholder=""></label><label>Number of Daughters<input type="number"
+                            placeholder=""></label><label>Guardian / Caregiver<input type="text"
+                            placeholder="Guardian / Caregiver"></label><label>Personal Remarks<textarea
+                            placeholder="Enter details..."></textarea></label><label>Hobbies and Interests<input
+                            type="text" placeholder="Hobbies and Interests"></label></div>
+            </section>
+            <section class="section">
+                <h3>02 · Current education</h3>
+                <div class="fields"><label>Current Education Status<select>
+                            <option>Select</option>
+                            <option>Studying</option>
+                            <option>Completed</option>
+                            <option>Discontinued</option>
+                            <option>Not enrolled</option>
+                        </select></label><label>Highest General Education<input type="text"
+                            placeholder="Highest General Education"></label><label>Highest Madrassa Education<input
+                            type="text" placeholder="Highest Madrassa Education"></label><label>Current School /
+                        College<input type="text" placeholder="Current School / College"></label><label>Current Class /
+                        Course<input type="text" placeholder="Current Class / Course"></label><label>Current Madrassa
+                        Class<input type="text" placeholder="Current Madrassa Class"></label><label>Education
+                        Specialization<input type="text" placeholder="Education Specialization"></label><label>Education
+                        Support Needed<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label></div>
+            </section>
+            <section class="section">
+                <h3>03 · Qualification history</h3>
+                <div class="fields"><label>Education Stream<select>
+                            <option>General</option>
+                            <option>Religious</option>
+                            <option>Vocational</option>
+                        </select></label><label>Qualification Level<input type="text"
+                            placeholder="Qualification Level"></label><label>Degree / Course<input type="text"
+                            placeholder="Degree / Course"></label><label>Institution / Board<input type="text"
+                            placeholder="Institution / Board"></label><label>Completion Year<input type="number"
+                            placeholder=""></label><label>Completion Status<select>
+                            <option>Select</option>
+                            <option>Completed</option>
+                            <option>In progress</option>
+                            <option>Discontinued</option>
+                        </select></label><label>Certificate Upload<input type="file" placeholder=""></label></div>
+            </section>
+            <section class="section">
+                <h3>04 · Employment</h3>
+                <div class="fields"><label>Employment Status<select>
+                            <option>Select</option>
+                            <option>Employed</option>
+                            <option>Self-employed</option>
+                            <option>Business Owner</option>
+                            <option>Student</option>
+                            <option>Homemaker</option>
+                            <option>Unemployed</option>
+                            <option>Retired</option>
+                            <option>Other</option>
+                        </select></label><label>Job Title / Occupation<input type="text"
+                            placeholder="Job Title / Occupation"></label><label>Employer / Business<input type="text"
+                            placeholder="Employer / Business"></label><label>Employment Type<select>
+                            <option>Select</option>
+                            <option>Full-time</option>
+                            <option>Part-time</option>
+                            <option>Contract</option>
+                            <option>Self-employed</option>
+                        </select></label><label>Employment Country<input type="text"
+                            placeholder="Employment Country"></label><label>Employment State<input type="text"
+                            placeholder="Employment State"></label><label>Employment City<input type="text"
+                            placeholder="Employment City"></label><label>Monthly Income<input type="number"
+                            placeholder=""></label><label class="check"><input type="checkbox">Seeking
+                        Employment</label><label class="check"><input type="checkbox">Enroll in Mahall Job
+                        Desk</label><label class="check"><input type="checkbox">Available for
+                        Opportunities</label><label>Employment Start Date<input type="date" placeholder=""></label>
+                </div>
+            </section>
+            <section class="section">
+                <h3>05 · Skills and career</h3>
+                <div class="fields"><label>Skills<textarea
+                            placeholder="Enter details..."></textarea></label><label>Skill Proficiency<select>
+                            <option>Select</option>
+                            <option>Beginner</option>
+                            <option>Intermediate</option>
+                            <option>Advanced</option>
+                        </select></label><label>Professional Certifications<input type="text"
+                            placeholder="Professional Certifications"></label><label>Work Experience (Years)<input
+                            type="number" placeholder=""></label><label>Interested in Training<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Preferred Training Area<input type="text"
+                            placeholder="Preferred Training Area"></label><label>Career Goals<textarea
+                            placeholder="Enter details..."></textarea></label><label class="check"><input
+                            type="checkbox">Available for Volunteering</label></div>
+            </section>
+            <section class="section">
+                <h3>06 · Health and care (restricted)</h3>
+                <div class="fields"><label>Health Disclosure<select>
+                            <option>Not provided</option>
+                            <option>Share details</option>
+                            <option>Prefer not to disclose</option>
+                        </select></label><label>Health Condition Status<select>
+                            <option>Not provided</option>
+                            <option>No known condition</option>
+                            <option>Has condition</option>
+                            <option>Undisclosed</option>
+                        </select></label><label>Health Conditions<textarea
+                            placeholder="Enter details..."></textarea></label><label>Illness Description<textarea
+                            placeholder="Enter details..."></textarea></label><label>Support / Accommodation
+                        Needed<textarea placeholder="Enter details..."></textarea></label><label>Emergency Medical
+                        Contact<input type="tel" placeholder="Emergency Medical Contact"></label><label>Regular Care
+                        Assistance<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Disability Support Requested<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Medical Financial Assistance<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Health Insurance<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label class="check"><input type="checkbox">Health Donor
+                        Registration</label><label>Preferred Care Contact<input type="text"
+                            placeholder="Preferred Care Contact"></label></div>
+            </section>
+            <section class="section">
+                <h3>07 · Identification (restricted)</h3>
+                <div class="fields"><label>Document Type<select>
+                            <option>Select</option>
+                            <option>Aadhaar</option>
+                            <option>Voter ID</option>
+                            <option>Passport</option>
+                            <option>PAN</option>
+                            <option>Other</option>
+                        </select></label><label>Aadhaar Reference<input type="text"
+                            placeholder="Aadhaar Reference"></label><label>Voter ID Reference<input type="text"
+                            placeholder="Voter ID Reference"></label><label>Passport Reference<input type="text"
+                            placeholder="Passport Reference"></label><label>PAN Reference<input type="text"
+                            placeholder="PAN Reference"></label><label>NPR Reference<input type="text"
+                            placeholder="NPR Reference"></label><label>Document Upload<input type="file"
+                            placeholder=""></label><label>Verification Status<select>
+                            <option>Pending</option>
+                            <option>Verified</option>
+                            <option>Rejected</option>
+                        </select></label><label>Document Expiry Date<input type="date" placeholder=""></label></div>
+            </section>
+            <section class="section">
+                <h3>08 · Residence and Pravasi</h3>
+                <div class="fields"><label>Current Residency Status<select>
+                            <option>Select</option>
+                            <option>Resident</option>
+                            <option>Away in India</option>
+                            <option>Pravasi / NRI</option>
+                            <option>Other</option>
+                        </select></label><label class="check"><input type="checkbox">Use Family
+                        Address</label><label>Current Residential Address<textarea
+                            placeholder="Enter details..."></textarea></label><label>Current House Number<input
+                            type="text" placeholder="Current House Number"></label><label>Current Ward<input type="text"
+                            placeholder="Current Ward"></label><label class="check"><input type="checkbox">Pravasi /
+                        NRI</label><label>Country of Residence<input type="text"
+                            placeholder="Country of Residence"></label><label>State / Region<input type="text"
+                            placeholder="State / Region"></label><label>City / Place<input type="text"
+                            placeholder="City / Place"></label><label>Date Moved<input type="date"
+                            placeholder=""></label><label>Previous Residence<textarea
+                            placeholder="Enter details..."></textarea></label></div>
+            </section>
+            <section class="section">
+                <h3>09 · Social and community activities</h3>
+                <div class="fields"><label>Community Activities<textarea
+                            placeholder="Enter details..."></textarea></label><label>Volunteer Interests<input
+                            type="text" placeholder="Volunteer Interests"></label><label>Mahall Committee
+                        Memberships<input type="text" placeholder="Mahall Committee Memberships"></label><label
+                        class="check"><input type="checkbox">Interested in Community Programs</label><label>Volunteer
+                        Availability<input type="text" placeholder="Volunteer Availability"></label><label>Hobbies<input
+                            type="text" placeholder="Hobbies"></label><label>Future Plans<textarea
+                            placeholder="Enter details..."></textarea></label><label>Additional Remarks<textarea
+                            placeholder="Enter details..."></textarea></label></div>
+            </section>
+            <section class="section">
+                <h3>10 · Religious education (optional)</h3>
+                <div class="fields"><label>Madrassa Education Status<input type="text"
+                            placeholder="Madrassa Education Status"></label><label>Madrassa Qualification<input
+                            type="text" placeholder="Madrassa Qualification"></label><label>Madrassa Class<input
+                            type="text" placeholder="Madrassa Class"></label><label>Religious Education
+                        Institution<input type="text"
+                            placeholder="Religious Education Institution"></label><label>Religious Education
+                        Support<select>
+                            <option>Select</option>
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select></label><label>Original Religious / Habit Questionnaire Answers<textarea
+                            placeholder="Enter details..."></textarea></label></div>
+            </section>
+            <section class="section">
+                <h3>11 · Special welfare registers</h3>
+                <div class="fields"><label>Orphan / Yatheem Support Eligibility<select>
+                            <option>Not assessed</option>
+                            <option>Eligible</option>
+                            <option>Not eligible</option>
+                        </select></label><label>Guardian Details<input type="text"
+                            placeholder="Guardian Details"></label><label>Support Needed<textarea
+                            placeholder="Enter details..."></textarea></label><label>Welfare Case Reference<input
+                            type="text" placeholder="Welfare Case Reference"></label><label>Current Assistance
+                        Status<select>
+                            <option>Select</option>
+                            <option>Pending</option>
+                            <option>Active</option>
+                            <option>Closed</option>
+                        </select></label><label>Special Assistance Remarks<textarea
+                            placeholder="Enter details..."></textarea></label><label>Last Welfare Review Date<input
+                            type="date" placeholder=""></label></div>
+            </section>
+            <section class="section">
+                <h3>12 · Member subscription (operational)</h3>
+                <div class="fields"><label>Subscription Account<input type="text"
+                            placeholder="Subscription Account"></label><label>Subscription Amount<input type="number"
+                            placeholder=""></label><label>Subscription Status<select>
+                            <option>Select</option>
+                            <option>Active</option>
+                            <option>Inactive</option>
+                            <option>Exempt</option>
+                        </select></label><label>Subscription Balance<input type="number"
+                            placeholder=""></label><label>Subscription Advance<input type="number"
+                            placeholder=""></label><label>Mess Contribution<input type="number"
+                            placeholder=""></label><label>Annual Contribution<input type="number"
+                            placeholder=""></label><label>Ramadan Contribution<input type="number"
+                            placeholder=""></label><label>Central Fee<input type="number"
+                            placeholder=""></label><label>Expense Return / Refund<input type="number"
+                            placeholder=""></label></div>
+            </section>
+        </div>
+        <div class="foot">Mahall Management System · Static form review prototype · No backend or data persistence</div>
+    </main>
+    <script>function showForm(id) { document.querySelectorAll('.page').forEach(x => x.classList.toggle('hide', x.id !== id)); document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.id === id)); window.scrollTo({ top: 0, behavior: 'smooth' }) } document.addEventListener('submit', e => e.preventDefault());</script>
+</body>
+
+</html>
